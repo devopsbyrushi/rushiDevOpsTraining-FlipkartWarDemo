@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flipkart Clone - by Rushi | Maven Demo</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; }
+  body { background: #f1f3f6; }
+
+  /* Scrolling Marquee Banner */
+  .top-banner {
+    background: linear-gradient(90deg, #ff6b35, #f7931e, #ff6b35);
+    color: white;
+    padding: 10px 0;
+    overflow: hidden;
+    font-weight: bold;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #d4541a;
+  }
+  .marquee-content {
+    display: inline-block;
+    padding-left: 100%;
+    animation: scroll-left 18s linear infinite;
+    white-space: nowrap;
+  }
+  @keyframes scroll-left {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(-100%, 0); }
+  }
+
+  /* Header */
+  header {
+    background: #2874f0;
+    color: white;
+    padding: 12px 40px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  }
+  .logo {
+    font-size: 26px;
+    font-weight: bold;
+    font-style: italic;
+    color: white;
+  }
+  .logo-tag { font-size: 11px; color: #f9d71c; font-style: italic; display: block; }
+  .search-bar {
+    flex: 1;
+    background: white;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    max-width: 700px;
+  }
+  .search-bar input {
+    flex: 1;
+    border: none;
+    padding: 11px;
+    outline: none;
+    font-size: 14px;
+    color: #333;
+  }
+  .search-bar button {
+    background: #2874f0;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+  .nav-buttons { display: flex; gap: 20px; align-items: center; }
+  .nav-buttons button {
+    background: white;
+    color: #2874f0;
+    border: none;
+    padding: 8px 30px;
+    border-radius: 3px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 15px;
+  }
+  .nav-buttons a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  /* Categories Bar */
+  .categories {
+    background: white;
+    padding: 16px 40px;
+    display: flex;
+    justify-content: space-around;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .category {
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .category:hover { transform: translateY(-3px); }
+  .category-icon {
+    font-size: 42px;
+    margin-bottom: 6px;
+  }
+  .category-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #212121;
+  }
+
+  /* Hero Banner */
+  .hero {
+    background: linear-gradient(135deg, #4527a0, #7b1fa2);
+    color: white;
+    padding: 30px 40px;
+    margin: 12px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .hero-text h2 { font-size: 28px; margin-bottom: 8px; }
+  .hero-text p { font-size: 15px; opacity: 0.9; }
+  .hero-emoji { font-size: 80px; }
+
+  /* Products Section */
+  .section-title {
+    background: white;
+    padding: 18px 24px;
+    margin: 12px 12px 0 12px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #212121;
+    border-radius: 4px 4px 0 0;
+  }
+  .products-grid {
+    background: white;
+    margin: 0 12px 12px 12px;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 24px;
+    border-radius: 0 0 4px 4px;
+  }
+  .product-card {
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+    padding: 12px;
+    border-radius: 4px;
+  }
+  .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .product-image {
+    font-size: 70px;
+    margin-bottom: 12px;
+    height: 90px;
+    line-height: 90px;
+  }
+  .product-name {
+    font-size: 14px;
+    color: #212121;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .product-price {
+    font-size: 16px;
+    font-weight: bold;
+    color: #388e3c;
+    margin-bottom: 4px;
+  }
+  .product-discount {
+    font-size: 12px;
+    color: #ff6161;
+    font-weight: 600;
+  }
+
+  /* Footer */
+  footer {
+    background: #172337;
+    color: #c2c2c2;
+    padding: 30px 40px;
+    margin-top: 20px;
+  }
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #2a3447;
+    padding-bottom: 18px;
+    margin-bottom: 18px;
+  }
+  .footer-brand {
+    font-size: 22px;
+    font-weight: bold;
+    color: #f9d71c;
+  }
+  .footer-tag { font-size: 13px; color: #c2c2c2; margin-top: 4px; }
+  .footer-bottom {
+    text-align: center;
+    font-size: 13px;
+    color: #878787;
+  }
+  .footer-bottom strong { color: #f9d71c; }
+</style>
+</head>
+<body>
+
+  <!-- 🚀 Scrolling Banner (Trainer Identifier) -->
+  <div class="top-banner">
+    <div class="marquee-content">
+      🚀 &nbsp;&nbsp; Flipkart Application is being developed by Rushi &nbsp;&nbsp; ✨ &nbsp;&nbsp;
+      Maven Demo Project &nbsp;&nbsp; 🛠️ &nbsp;&nbsp;
+      Flipkart Application is being developed by Rushi &nbsp;&nbsp; ⭐ &nbsp;&nbsp;
+      DevOps Multi-Cloud Training &nbsp;&nbsp; 🚀
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div>
+      <div class="logo">Flipkart Demo</div>
+      <span class="logo-tag">Explore Plus ✨</span>
+    </div>
+    <div class="search-bar">
+      <input type="text" placeholder="Search for products, brands and more...">
+      <button>🔍 Search</button>
+    </div>
+    <div class="nav-buttons">
+      <button>Login</button>
+      <a href="#">More</a>
+      <a href="#">🛒 Cart</a>
+    </div>
+  </header>
+
+  <!-- Categories -->
+  <div class="categories">
+    <div class="category"><div class="category-icon">📱</div><div class="category-name">Mobiles</div></div>
+    <div class="category"><div class="category-icon">👕</div><div class="category-name">Fashion</div></div>
+    <div class="category"><div class="category-icon">💻</div><div class="category-name">Electronics</div></div>
+    <div class="category"><div class="category-icon">🏠</div><div class="category-name">Home</div></div>
+    <div class="category"><div class="category-icon">✈️</div><div class="category-name">Travel</div></div>
+    <div class="category"><div class="category-icon">🎁</div><div class="category-name">Top Offers</div></div>
+    <div class="category"><div class="category-icon">📚</div><div class="category-name">Books</div></div>
+    <div class="category"><div class="category-icon">🎮</div><div class="category-name">Gaming</div></div>
+    <div class="category"><div class="category-icon">🍔</div><div class="category-name">Grocery</div></div>
+  </div>
+
+  <!-- Hero Banner -->
+  <div class="hero">
+    <div class="hero-text">
+      <h2>Big Saving Days! 🎉</h2>
+      <p>Up to 80% off on Electronics, Fashion &amp; More</p>
+    </div>
+    <div class="hero-emoji">🛍️</div>
+  </div>
+
+  <!-- Products Section -->
+  <div class="section-title">🔥 Best of Electronics</div>
+  <div class="products-grid">
+    <div class="product-card">
+      <div class="product-image">📱</div>
+      <div class="product-name">Smartphone Pro Max</div>
+      <div class="product-price">₹54,999</div>
+      <div class="product-discount">25% off</div>
+    </div>
+    <div class="product-card">
+      <div class="product-image">💻</div>
+      <div class="product-name">Laptop UltraBook</div>
+      <div class="product-price">₹62,499</div>
+      <div class="product-discount">30% off</div>
+    </div>
+    <div class="product-card">
+      <div class="product-image">🎧</div>
+      <div class="product-name">Wireless Headphones</div>
+      <div class="product-price">₹2,199</div>
+      <div class="product-discount">50% off</div>
+    </div>
+    <div class="product-card">
+      <div class="product-image">⌚</div>
+      <div class="product-name">Smart Watch Series 9</div>
+      <div class="product-price">₹3,499</div>
+      <div class="product-discount">40% off</div>
+    </div>
+    <div class="product-card">
+      <div class="product-image">📺</div>
+      <div class="product-name">4K Smart TV 55"</div>
+      <div class="product-price">₹38,999</div>
+      <div class="product-discount">35% off</div>
+    </div>
+    <div class="product-card">
+      <div class="product-image">📷</div>
+      <div class="product-name">DSLR Camera</div>
+      <div class="product-price">₹45,000</div>
+      <div class="product-discount">20% off</div>
+    </div>
+    <div class="product-card">
+      <div class="product-image">🎮</div>
+      <div class="product-name">Gaming Console</div>
+      <div class="product-price">₹49,999</div>
+      <div class="product-discount">15% off</div>
+    </div>
+    <div class="product-card">
+      <div class="product-image">🔊</div>
+      <div class="product-name">Bluetooth Speaker</div>
+      <div class="product-price">₹1,899</div>
+      <div class="product-discount">45% off</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div>
+        <div class="footer-brand">Flipkart Demo</div>
+        <div class="footer-tag">A Maven Build Tool Demonstration Project</div>
+      </div>
+      <div style="text-align: right;">
+        <div style="color: #f9d71c; font-weight: bold;">📚 DevOps Multi-Cloud Training</div>
+        <div style="font-size: 12px; margin-top: 4px;">Day 02 — JAR vs WAR Demo</div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      🛠️ <strong>Flipkart Application is being developed by Rushi</strong> 🛠️ <br>
+      Built with ❤️ using Apache Maven · For educational purposes only
+    </div>
+  </footer>
+
+</body>
+</html>

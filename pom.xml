@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ===================================================== -->
+    <!--  SECTION 1: Project Metadata                          -->
+    <!-- ===================================================== -->
+    <groupId>com.rushi</groupId>
+    <artifactId>flipkart-clone</artifactId>
+    <version>1.0.0</version>
+
+    <!-- KEY DIFFERENCE: this builds a WAR (web archive) -->
+    <packaging>war</packaging>
+
+    <name>Flipkart Clone WAR - by Rushi</name>
+    <description>Web application demo for Maven Day 02 (deploy on Tomcat)</description>
+
+    <!-- ===================================================== -->
+    <!--  SECTION 2: Tools and Versions                        -->
+    <!-- ===================================================== -->
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <!-- ===================================================== -->
+    <!--  SECTION 3: Dependencies                              -->
+    <!--  Servlet API is "provided" (Tomcat already has it)    -->
+    <!-- ===================================================== -->
+    <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <!-- ===================================================== -->
+    <!--  Build configuration                                  -->
+    <!-- ===================================================== -->
+    <build>
+        <!-- Final WAR name: target/flipkart-clone.war -->
+        <finalName>flipkart-clone</finalName>
+
+        <plugins>
+            <!--
+              maven-war-plugin
+              Packages the project as a .war file ready for Tomcat
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.4.0</version>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
