@@ -481,9 +481,6 @@ stage('Deploying to GKE') {
 8. Jenkins applies the YAML files from the GitHub repository.
 9. Jenkins displays the LoadBalancer External IP.
 
-The Tomcat copy stage is optional. Remove it if you are deploying only through Docker and GKE. Confirm the Tomcat path and Jenkins permissions if you retain it.
-
----
 
 # 10. Verify Deployment from Cloud Shell
 
@@ -533,12 +530,6 @@ kubectl get svc flipkart-service
 kubectl get endpoints flipkart-service
 ```
 
-## Get only External IP
-
-```bash
-kubectl get svc flipkart-service \
-  -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
-```
 
 Open the application:
 
@@ -612,58 +603,6 @@ kubectl get pods -l app=flipkart-app
 
 ---
 
-# 13. Update Application Code and Deploy Changes
-
-When source code changes, for example, changing a product price from ₹40,000 to ₹45,000, the running Pods do not automatically receive the new application files.
-
-Follow this sequence:
-
-1. Update the source code.
-2. Commit and push changes to GitHub.
-3. Run the Jenkins pipeline.
-4. Confirm Maven creates a new WAR file.
-5. Confirm Docker builds the updated image.
-6. Push the updated image to Docker Hub.
-7. Deploy the updated image to GKE.
-8. Verify the new Pods.
-9. Refresh the application in the browser.
-
-**Important Image Tag Note:**
-
-Reusing `v1` makes it difficult to identify which application version is running.
-
-Recommended approach: Use a unique image tag for every Jenkins build, such as:
-
-```text
-devopsbyrushi/octsecurebankcicdpipleline:BUILD_NUMBER
-```
-
-Use the same tag when building, pushing and deploying.
-
-If you continue using `v1`, your Deployment uses:
-
-```yaml
-imagePullPolicy: Always
-```
-
-However, a new Pod must be created to pull the updated image. `imagePullPolicy: Always` does not automatically restart existing Pods.
-
-Useful commands:
-
-```bash
-kubectl describe deployment flipkart-app
-```
-
-```bash
-kubectl get pods -l app=flipkart-app -o wide
-```
-
-```bash
-kubectl rollout history deployment/flipkart-app
-```
-
----
-
 # 14. Configure GoDaddy DNS
 
 Domain:
@@ -712,83 +651,6 @@ http://www.rushilabs.in
 ```
 
 **Important:** DNS only points the domain to the LoadBalancer. HTTPS/SSL must be configured separately.
-
----
-
-# 15. Troubleshooting
-
-## kubectl: command not found
-
-Install kubectl on the Jenkins VM and ensure it is available to the Jenkins service user.
-
-## gke-gcloud-auth-plugin missing
-
-Install the GKE authentication plugin:
-
-```bash
-sudo apt-get install -y google-cloud-cli-gke-gcloud-auth-plugin
-```
-
-Verify:
-
-```bash
-gke-gcloud-auth-plugin --version
-```
-
-## 403 Insufficient Authentication Scopes
-
-If using the VM's attached service account, check VM access scopes and IAM roles.
-
-If using the GKE-SA JSON key, check the IAM roles assigned to that service account.
-
-These are two different authentication methods.
-
-## Cloud Resource Manager API disabled
-
-Run using an administrator account:
-
-```bash
-gcloud services enable cloudresourcemanager.googleapis.com \
-  --project=august2027
-```
-
-## GKE Connection Timeout
-
-Error example:
-
-```text
-dial tcp IP_ADDRESS:443: i/o timeout
-```
-
-Check:
-
-- GKE endpoint configuration.
-- Private or public cluster settings.
-- Master authorized networks.
-- Firewall rules.
-- Network connectivity from Jenkins to the GKE control plane.
-
-Successful authentication does not guarantee network connectivity.
-
-## LoadBalancer External IP Pending
-
-Wait a few minutes and run:
-
-```bash
-kubectl get svc flipkart-service
-```
-
-## Updated Application Changes Not Visible
-
-Check:
-
-1. Latest GitHub commit.
-2. Maven WAR build.
-3. Docker image build.
-4. Docker Hub push.
-5. Kubernetes Deployment image.
-6. Running Pods.
-7. Browser cache.
 
 ---
 
