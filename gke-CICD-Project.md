@@ -406,157 +406,66 @@ Navigate to:
 
 Use the following pipeline.
 
-```groovy
-node {
-
-    stage('GitHub Code Checkout') {
-
-        git credentialsId: 'rushi-github-credentials',
-        url: 'https://github.com/devopsbyrushi/rushiDevOpsTraining-FlipkartWarDemo.git'
-
+node{
+    stage('github code checkout'){
+      git credentialsId: 'rushi-github-credentials', url: 'https://github.com/devopsbyrushi/rushiDevOpsTraining-FlipkartWarDemo.git'  
     }
-
-    stage('Maven Validate') {
-
-        sh 'mvn validate'
-
+    
+    stage('maven build phases-mvn validate'){
+        sh 'sudo mvn validate'
     }
-
-    stage('Maven Install') {
-
-        sh 'mvn clean install'
-
+    
+    stage('mvn build phase -mvn install'){
+        sh 'sudo mvn install'
     }
-
-    // Optional: Keep this stage only if separate Tomcat deployment is required.
-
-    stage('Copy Artifact to Tomcat Webapps') {
-
-        sh 'sudo cp target/flipkart-clone.war /opt/tomcat10/webapps/'
-
+    
+    stage('copying artifact to tomcat webapps'){
+        sh 'sudo cp -r /var/lib/jenkins/workspace/cicd-pipeline/target/flipkart-clone.war /opt/tomcat10/webapps/'
     }
-
-    stage('Build Docker Image') {
-
+    
+    stage('creating an docker image '){
         sh 'docker build -t devopsbyrushi/octsecurebankcicdpipleline:v1 .'
-
     }
-
-    stage('Docker Hub Login') {
-
-        withCredentials([string(
-            credentialsId: 'dockerhub-passwd',
-            variable: 'rushidockerhubpassword'
-        )]) {
-
-            sh '''
-                echo "$rushidockerhubpassword" |
-                docker login -u devopsbyrushi --password-stdin
-            '''
-
-        }
-
-    }
-
-    stage('Push Image to Docker Hub') {
-
+    
+    stage('dockerlogin with rushi cred'){
+        withCredentials([string(credentialsId: 'dockerhub-passwd', variable: 'rushidockerhubpassword')]) {
+       sh 'echo "$rushidockerhubpassword" | docker login -u devopsbyrushi --password-stdin'
+}
+   stage('pushing mylatestimages to dockerhub')
         sh 'docker push devopsbyrushi/octsecurebankcicdpipleline:v1'
-
     }
+    
 
-    stage('Deploying to GKE') {
+stage('Deploying to GKE') {
+    withCredentials([file(credentialsId: 'GKE-SA', variable: 'GKE_SA')]) {
+        sh '''
+            echo "Authenticating with GCP..."
 
-        withCredentials([file(
-            credentialsId: 'GKE-SA',
-            variable: 'GKE_SA'
-        )]) {
+            gcloud auth activate-service-account \
+                --key-file="$GKE_SA" \
+                --project=august2027
 
-            sh '''
+            gcloud config set project august2027
 
-                set -e
+            echo "Connecting to GKE..."
 
-                echo "Authenticating with Google Cloud..."
+            gcloud container clusters get-credentials rushi-gke \
+                --project=august2027 \
+                --zone=us-central1-a
 
-                gcloud auth activate-service-account \
-                    --key-file="$GKE_SA" \
-                    --project=august2027
+            echo "Checking GKE nodes..."
 
-                gcloud config set project august2027
-
-                echo "Connecting to GKE..."
-
-                gcloud container clusters get-credentials rushi-gke \
-                    --project=august2027 \
-                    --zone=us-central1-a
-
-                echo "Checking GKE Nodes..."
-
-                kubectl get nodes
-
-                echo "Applying Kubernetes YAML files..."
-
-                kubectl apply -f k8s/
-
-                echo "Checking Deployment..."
-
-                kubectl get deployment flipkart-app
-
-                echo "Checking Pods..."
-
-                kubectl get pods -l app=flipkart-app
-
-                echo "Checking Services..."
-
-                kubectl get svc
-
-            '''
-
-        }
-
+            kubectl get nodes
+            kubectl apply -f k8s/
+            
+            kubectl rollout restart deployment/flipkart-app
+            kubectl rollout status deployment/flipkart-app
+            kubectl get svc
+        '''
     }
+}
 
-    stage('Display LoadBalancer External IP') {
-
-        withCredentials([file(
-            credentialsId: 'GKE-SA',
-            variable: 'GKE_SA'
-        )]) {
-
-            sh '''
-
-                set -e
-
-                gcloud auth activate-service-account \
-                    --key-file="$GKE_SA" \
-                    --project=august2027
-
-                gcloud container clusters get-credentials rushi-gke \
-                    --project=august2027 \
-                    --zone=us-central1-a
-
-                echo "GKE Services:"
-
-                kubectl get svc
-
-                EXTERNAL_IP=$(kubectl get svc flipkart-service \
-                    -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-
-                if [ -n "$EXTERNAL_IP" ]; then
-
-                    echo "Flipkart Application URL: http://$EXTERNAL_IP"
-
-                else
-
-                    echo "LoadBalancer External IP is still pending."
-
-                fi
-
-            '''
-
-        }
-
-    }
-
+    
 }
 ```
 
