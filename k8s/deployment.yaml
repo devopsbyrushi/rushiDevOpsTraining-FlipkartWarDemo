@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: flipkart-app
-          image: docker.io/devopsbyrushi/octsecurebankcicdpipleline:v1
+          image: docker.io/surya7726/octflitkart:v1
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
